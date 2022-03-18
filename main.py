@@ -1,4 +1,5 @@
-
+import data_loader
+import random_forest
 
 if __name__ == '__main__':
-    print("test")
+    random_forest.run_random_forest()
