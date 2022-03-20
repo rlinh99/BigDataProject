@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from keras.preprocessing.text import Tokenizer
+# from keras.preprocessing.text import Tokenizer
 
 
 def load_data(type):
@@ -14,4 +14,3 @@ def load_data(type):
 
 train_data = load_data('train')
 test_data = load_data('validation')
-print(len(train_data))
