@@ -135,3 +135,4 @@ def run():
     print("-----------Accuracy Result-----------")
     print("The test accuracy is: " + str(test_accuracy))
     validation.show_f1_score(y_test, a)
+    return 0
