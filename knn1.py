@@ -26,19 +26,19 @@ def get_neighbors(train, test_row, num_neighbors):
 
 
 def get_most_frequent(labels):
-    counter = 0
-    result = labels[0]
-    for l in labels:
-        curr_frequency = labels.count(i)
-        if(curr_frequency> counter):
-            counter = curr_frequency
-            result = l
-    return result
+    labels_dict = dict()
+    for label in labels:
+        if label not in labels_dict.keys():
+            labels_dict[label] = 0
+        else:
+            labels_dict[label] = labels_dict[label]+1
+    return max(labels_dict, key=labels_dict.get)
 
 
 def predict_classification(train, test_row, num_neighbors):
     neighbors = get_neighbors(train, test_row, num_neighbors)
     labels = [row[1] for row in neighbors]
+    # prediction = max(set(labels), key=labels.count)
     prediction = get_most_frequent(labels)
     return prediction
 
@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
     K_val = max(k_accuracy, key=k_accuracy.get)
     print(f"Best k value is: {K_val}")
-    a = k_nearest_neighbors(train_data, X_test, K_val)
+    a = k_nearest_neighbors(train_data, X_test, 50)
     test_accuracy = numpy.mean(a == y_test)
 
     print("-----------Accuracy Result-----------")
