@@ -1,22 +1,31 @@
-import difflib
 import math
 import numpy
 import validation
-import operator
 import process_data
 
+dist_type = 'eucd'
 
-def euclidean_distance(row1, row2):
+def man_distance(row1, row2):
+    return sum(abs(val1 - val2) for val1, val2 in zip(row1, row2))
+
+
+def euc_distance(row1, row2):
     distance = 0.0
     for i in range(len(row1) - 1):
         distance += (row1[i] - row2[i]) ** 2
     return math.sqrt(distance)
 
 
+def get_distance(row1, row2):
+    if dist_type == 'manhattan':
+        return man_distance(row1, row2)
+    return euc_distance(row1, row2)
+
+
 def get_neighbors(train, test_row, num_neighbors):
     distances = list()
     for train_row in train:
-        dist = euclidean_distance(test_row, train_row[0])
+        dist = get_distance(test_row, train_row[0])
         distances.append((train_row, dist))
     distances.sort(key=lambda tup: tup[1])
     neighbors = list()
@@ -38,15 +47,14 @@ def get_most_frequent(labels):
 def predict_classification(train, test_row, num_neighbors):
     neighbors = get_neighbors(train, test_row, num_neighbors)
     labels = [row[1] for row in neighbors]
-    # prediction = max(set(labels), key=labels.count)
     prediction = get_most_frequent(labels)
     return prediction
 
 
-def k_nearest_neighbors(train, test, num_neighbors):
+def knn(train, test, k):
     predictions = list()
     for row in test:
-        output = predict_classification(train, row, num_neighbors)
+        output = predict_classification(train, row, k)
         predictions.append(output)
     return numpy.array(predictions)
 
@@ -64,13 +72,14 @@ if __name__ == '__main__':
 
     for i in range(3, k_range):
         print(i)
-        temp = k_nearest_neighbors(train_data, X_test, i)
+        temp = knn(train_data, X_test, i)
         accuracy = numpy.mean(temp == y_test)
         k_accuracy[i] = accuracy
 
     K_val = max(k_accuracy, key=k_accuracy.get)
+    # K_val = 20
     print(f"Best k value is: {K_val}")
-    a = k_nearest_neighbors(train_data, X_test, 50)
+    a = knn(train_data, X_test, K_val)
     test_accuracy = numpy.mean(a == y_test)
 
     print("-----------Accuracy Result-----------")
