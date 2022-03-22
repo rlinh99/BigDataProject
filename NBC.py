@@ -124,7 +124,7 @@ class NBC:
         return numpy.array(predictions)
 
 
-if __name__ == '__main__':
+def run():
     X_train, y_train, X_test, y_test, length = process_data.get_processed_data()
     print(type(X_train))
     print(type(y_train))
@@ -134,6 +134,4 @@ if __name__ == '__main__':
     test_accuracy = numpy.mean(a == y_test)
     print("-----------Accuracy Result-----------")
     print("The test accuracy is: " + str(test_accuracy))
-    w, e = validation.get_f1_score(y_test, a)
-    print(w)
-    print(e)
+    validation.show_f1_score(y_test, a)
