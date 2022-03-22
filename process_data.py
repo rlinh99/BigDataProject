@@ -75,7 +75,7 @@ def get_processed_data():
     # le2.fit(X_train_raw['drugName'])
     # X_train_raw['drugName_val'] = le2.transform(X_train_raw['drugName'])
     # X_test_raw['drugName_val'] = le2.transform(X_test_raw['drugName'])
-    eva_labels = ['sideEffects_val', 'comment_val', 'clean_comment_val']
+    eva_labels = ['sideEffects_val', 'comment_val', 'clean_comment_val', 'word_count']
     X_train = X_train_raw[eva_labels].to_numpy()
     X_train = preprocessing.scale(X_train)
 

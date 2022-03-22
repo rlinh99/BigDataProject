@@ -1,3 +1,4 @@
+import difflib
 import math
 import numpy
 import validation
@@ -5,51 +6,71 @@ import operator
 import process_data
 
 
-class KNN:
-    def get_distance(datapoint1, datapoint2):
-        distance = 0
-        for x in range(len(X_train)):
-            distance += (datapoint1[x] - datapoint2[x]) ** 2
-
-        final_distance = math.sqrt(distance)
-        return final_distance
-
-    def get_K_neighbors(X_train, y_test, K):
-        ## 1. get all distances
-        all_distances = []
-        for i in range(len(X_train)):
-            distance = KNN.get_distance(X_train[i], y_test)
-            all_distances.append((X_train[i], distance))
-
-        ### 2. sort all distances
-        all_distances.sort(key=operator.itemgetter(1))
-
-        ### 3. pickup the K nearest neighbours
-        K_neighbors = []
-        for k in range(K):
-            K_neighbors.append(all_distances[k][0])
-        return K_neighbors
+def euclidean_distance(row1, row2):
+    distance = 0.0
+    for i in range(len(row1) - 1):
+        distance += (row1[i] - row2[i]) ** 2
+    return math.sqrt(distance)
 
 
-    def get_prediction(K_neighbors):
-        category_votes = {}
-        for i in range(len(K_neighbors)):
-            category = K_neighbors[i][-1]
-            if category in category_votes:
-                category_votes[category] += 1
-            else:
-                category_votes[category] = 1
-        sort_category_votes = sorted(category_votes.items(), key=operator.itemgetter(1), reverse=True)
+def get_neighbors(train, test_row, num_neighbors):
+    distances = list()
+    for train_row in train:
+        dist = euclidean_distance(test_row, train_row[0])
+        distances.append((train_row, dist))
+    distances.sort(key=lambda tup: tup[1])
+    neighbors = list()
+    for i in range(num_neighbors):
+        neighbors.append(distances[i][0])
+    return neighbors
 
-        most_vote = sort_category_votes[0][0]
-        return numpy.array(most_vote)
+
+def get_most_frequent(labels):
+    counter = 0
+    result = labels[0]
+    for l in labels:
+        curr_frequency = labels.count(i)
+        if(curr_frequency> counter):
+            counter = curr_frequency
+            result = l
+    return result
+
+
+def predict_classification(train, test_row, num_neighbors):
+    neighbors = get_neighbors(train, test_row, num_neighbors)
+    labels = [row[1] for row in neighbors]
+    prediction = get_most_frequent(labels)
+    return prediction
+
+
+def k_nearest_neighbors(train, test, num_neighbors):
+    predictions = list()
+    for row in test:
+        output = predict_classification(train, row, num_neighbors)
+        predictions.append(output)
+    return numpy.array(predictions)
 
 
 if __name__ == '__main__':
     X_train, y_train, X_test, y_test, length = process_data.get_processed_data()
     # knn
-    K = 3
-    a = KNN.get_prediction(X_test)
+    train_data = []
+    for i in range(len(X_train)):
+        train_data.append((X_train[i], y_train[i]))
+
+    k_range = 25
+    print(f"Search for optimal k value under range 3 to {k_range}")
+    k_accuracy = dict()
+
+    for i in range(3, k_range):
+        print(i)
+        temp = k_nearest_neighbors(train_data, X_test, i)
+        accuracy = numpy.mean(temp == y_test)
+        k_accuracy[i] = accuracy
+
+    K_val = max(k_accuracy, key=k_accuracy.get)
+    print(f"Best k value is: {K_val}")
+    a = k_nearest_neighbors(train_data, X_test, K_val)
     test_accuracy = numpy.mean(a == y_test)
 
     print("-----------Accuracy Result-----------")

@@ -126,7 +126,8 @@ class NBC:
 
 if __name__ == '__main__':
     X_train, y_train, X_test, y_test, length = process_data.get_processed_data()
-
+    print(type(X_train))
+    print(type(y_train))
     nbc = NBC(feature_types=length, num_classes=5)
     nbc.fit(X_train, y_train)
     a = nbc.predict(X_test)
