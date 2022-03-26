@@ -1,5 +1,7 @@
 import math
 import numpy
+from matplotlib import pyplot as plt
+
 import validation
 import process_data
 
@@ -106,10 +108,6 @@ class NBC:
         print(self.get_class_probabilities())
         print("The conditional distribution of features for each class is:"
               " (Count, Mean, Standard Deviation)")
-        for i, _ in enumerate(self.trained):
-            print("Class " + str(i))
-            # for item in self.trained[i]:
-            #     print(item)
 
     # method to predict
     def predict(self, XTest):
@@ -125,9 +123,7 @@ class NBC:
 
 
 def run():
-    X_train, y_train, X_test, y_test, length = process_data.get_processed_data()
-    print(type(X_train))
-    print(type(y_train))
+    X_train, y_train, X_test, y_test, length, x_fill = process_data.get_processed_data()
     nbc = NBC(feature_types=length, num_classes=5)
     nbc.fit(X_train, y_train)
     a = nbc.predict(X_test)
@@ -135,4 +131,5 @@ def run():
     print("-----------Accuracy Result-----------")
     print("The test accuracy is: " + str(test_accuracy))
     validation.show_f1_score(y_test, a)
-    return 0
+
+    return nbc.predict(x_fill)
