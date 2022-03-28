@@ -5,7 +5,6 @@ import data_loader
 from nltk.corpus import stopwords
 import textblob as TextBlob
 import nltk
-from bs4 import BeautifulSoup
 import re
 
 nltk.download('stopwords')
@@ -22,18 +21,18 @@ def convert_comment_polarity(entries):
 
 def clean_review(raw_review):
     stemmer = SnowballStemmer('english')
-    # Delete HTML characters
-    review_text = BeautifulSoup(raw_review, 'html.parser').get_text()
     # Remove Numerical with regex
-    # letters = re.sub('[^a-zA-Z]', ' ', review_text)
+    letters = re.sub('[^a-zA-Z]', ' ', raw_review)
     # To Lower
-    words = review_text.lower().split()
+    # words = letters.lower().split()
+    words = raw_review.lower().split()
     # Remove stop words, push meaning words into a list
     meaningful_words = [w for w in words if not w in stopwords]
     # Extract Stem words, using english standard
     stemming_words = [stemmer.stem(w) for w in meaningful_words]
     # Join words back to a clean review
     return ' '.join(meaningful_words)
+    # return ' '.join(stemming_words)
 
 
 def get_processed_data():
