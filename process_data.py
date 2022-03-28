@@ -11,7 +11,7 @@ nltk.download('stopwords')
 stopwords = set(stopwords.words('english'))
 
 
-def convert_comment_polarity(entries):
+def convert_polarity(entries):
     converted = []
     for entry in entries:
         result = TextBlob.TextBlob(entry)
@@ -70,14 +70,13 @@ def get_processed_data():
     x_to_fill_raw['word_count'] = clean_reviews_to_fill.apply(lambda x: len(str(x).split()))
 
     # handle comment value
-    X_train_raw['comment_val'] = convert_comment_polarity(reviews)
-    X_test_raw['comment_val'] = convert_comment_polarity(reviews_t)
-    x_to_fill_raw['comment_val'] = convert_comment_polarity(reviews_to_fill)
+    X_train_raw['comment_val'] = convert_polarity(reviews)
+    X_test_raw['comment_val'] = convert_polarity(reviews_t)
+    x_to_fill_raw['comment_val'] = convert_polarity(reviews_to_fill)
 
-    X_train_raw['clean_comment_val'] = convert_comment_polarity(clean_reviews)
-    X_test_raw['clean_comment_val'] = convert_comment_polarity(clean_reviews_t)
-    x_to_fill_raw['clean_comment_val'] = convert_comment_polarity(clean_reviews_to_fill)
-
+    X_train_raw['clean_comment_val'] = convert_polarity(clean_reviews)
+    X_test_raw['clean_comment_val'] = convert_polarity(clean_reviews_t)
+    x_to_fill_raw['clean_comment_val'] = convert_polarity(clean_reviews_to_fill)
 
     X_train_raw['scaled_useful_count'] = preprocessing.scale(X_train_raw['usefulCount'])
     X_test_raw['scaled_useful_count'] = preprocessing.scale(X_test_raw['usefulCount'])
